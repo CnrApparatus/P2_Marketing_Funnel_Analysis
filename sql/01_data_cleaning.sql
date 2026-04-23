@@ -149,3 +149,20 @@ WHERE l.user_id = c.user_id
 UPDATE clean_conversions
 SET revenue = 0
 WHERE revenue IS NULL;
+
+
+-- ========================================================
+-- 4) ORPHAN RECORD REMOVAL
+-- Remove records with no matching parent keys
+-- ========================================================
+
+SELECT DISTINCT campaign_id
+FROM ad_performance
+WHERE campaign_id NOT IN (
+    SELECT campaign_id FROM ad_campaigns
+);
+
+DELETE FROM clean_ad_performance
+WHERE campaign_id NOT IN (
+    SELECT campaign_id FROM clean_ad_campaigns
+);
